@@ -6,5 +6,3 @@ RUN apt update && \
 			libpq-dev
 
 COPY root/ /
-
-VOLUME /config
