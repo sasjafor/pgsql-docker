@@ -5,6 +5,6 @@ RUN apt update && \
 			postgresql-contrib \
 			libpq-dev
 
-COPY root/ /
-
 VOLUME /config
+
+COPY root/ /
