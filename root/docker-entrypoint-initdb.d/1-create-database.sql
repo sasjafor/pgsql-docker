@@ -1,5 +1,6 @@
 -- Create mail user and db
-CREATE USER mailuser;
+\set mailuser_pw `echo "$POSTGRES_PASSWORD"`
+CREATE USER mailuser WITH PASSWORD :'mailuser_pw';
 CREATE DATABASE mailserver;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO mailuser;
 
