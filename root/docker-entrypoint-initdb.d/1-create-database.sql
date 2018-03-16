@@ -4,32 +4,32 @@ CREATE DATABASE mailserver;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO mailuser;
 
 -- Create domains table
-CREATE TABLE virtual_domains (
+CREATE TABLE mailserver.virtual_domains (
 	id SERIAL PRIMARY KEY,
 	name VARCHAR(50) NOT NULL
 );
 
 -- Create table for email users
-CREATE TABLE virtual_users (
+CREATE TABLE mailserver.virtual_users (
 	id SERIAL PRIMARY KEY,
 	domain_id SERIAL NOT NULL,
 	password VARCHAR(106) NOT NULL,
 	email VARCHAR(100) UNIQUE NOT NULL,
-	FOREIGN KEY (domain_id) REFERENCES virtual_domains(id) ON DELETE CASCADE
+	FOREIGN KEY (domain_id) REFERENCES mailserver.virtual_domains(id) ON DELETE CASCADE
 );
 
 -- Create table for aliases
-CREATE TABLE virtual_aliases (
+CREATE TABLE mailserver.virtual_aliases (
 	id SERIAL PRIMARY KEY,
 	domain_id SERIAL NOT NULL,
 	source VARCHAR(100) NOT NULL,
 	destination VARCHAR(100) NOT NULL,
-	FOREIGN KEY (domain_id) REFERENCES virtual_domains(id) ON DELETE CASCADE
+	FOREIGN KEY (domain_id) REFERENCES mailserver.virtual_domains(id) ON DELETE CASCADE
 );
 
 -- Insert domain
 \set hostname `echo "$SERVER_HOSTNAME"`
-INSERT INTO virtual_domains 
+INSERT INTO mailserver.virtual_domains 
 	(id, name)
 VALUES
 	(1, :'hostname');
@@ -44,7 +44,7 @@ CREATE EXTENSION pgcrypto;
 \set mailman_pw `echo "$MAILMAN_PASSWORD"`
 \set main_user `echo "$MAIN_ACCOUNT_USERNAME"` '@' :hostname
 \set main_user_pw `echo "$MAIN_ACCOUNT_PASSWORD"`
-INSERT INTO virtual_users
+INSERT INTO mailserver.virtual_users
 	(id, domain_id, password, email)
 VALUES
 	(1, 1, crypt(:'main_user_pw', gen_salt('bf', 10)), :'main_user'),
