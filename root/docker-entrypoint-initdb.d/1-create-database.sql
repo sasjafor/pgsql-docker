@@ -2,10 +2,6 @@
 \set mailuser_pw `echo "$POSTGRES_PASSWORD"`
 CREATE USER mailuser WITH PASSWORD :'mailuser_pw';
 CREATE DATABASE mailserver;
-ALTER DEFAULT PRIVILEGES IN SCHEMA mailserver GRANT SELECT ON TABLES TO mailuser;
-ALTER DEFAULT PRIVILEGES IN SCHEMA mailserver GRANT INSERT ON TABLES TO mailuser;
-ALTER DEFAULT PRIVILEGES IN SCHEMA mailserver GRANT UPDATE ON TABLES TO mailuser;
-ALTER DEFAULT PRIVILEGES IN SCHEMA mailserver GRANT DELETE ON TABLES TO mailuser;
 
 -- Connect to database
 \connect mailserver
@@ -57,6 +53,11 @@ VALUES
 	(1, 1, crypt(:'main_user_pw', gen_salt('bf', 10)), :'main_user'),
 	(2, 1, crypt(:'webmaster_pw', gen_salt('bf', 10)), :'webmaster_user'),
 	(3, 1, crypt(:'mailman_pw', gen_salt('bf', 10)), :'mailman_user');
+
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO mailuser;
+GRANT INSERT ON ALL TABLES IN SCHEMA public TO mailuser;
+GRANT UPDATE ON ALL TABLES IN SCHEMA public TO mailuser;
+GRANT DELETE ON ALL TABLES IN SCHEMA public TO mailuser;
 
 -- TEST PASSWORD
 -- SELECT * FROM virtual_users WHERE password = crypt(:'main_user_pw', password);
